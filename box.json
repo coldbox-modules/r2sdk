@@ -1,7 +1,7 @@
 {
   "name": "r2sdk",
   "slug": "r2sdk",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "modules",
   "author": "Eric Peterson <eric@elpete.com>",
   "shortDescription": "Cloudflare R2 client using the S3 API",
@@ -31,7 +31,7 @@
     "format": "cfformat run models,ModuleConfig.cfc,test-harness/**/*.cfc,build/*.cfc --overwrite && task run taskFile=build/VerifyDependencyTracking.cfc",
     "format:check": "cfformat check models,ModuleConfig.cfc,test-harness/**/*.cfc,build/*.cfc && task run taskFile=build/VerifyDependencyTracking.cfc",
     "test:dependency-tracking": "task run taskFile=build/VerifyDependencyTracking.cfc",
-    "test": "!python3 build/test.py",
+    "test": "task run taskFile=build/TestStandalone.cfc",
     "test:sdk-selection": "task run taskFile=build/VerifySdkSelection.cfc",
     "build:module": "task run taskFile=build/Package.cfc",
     "build:docs": "task run taskFile=build/Docs.cfc"
