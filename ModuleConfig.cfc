@@ -4,7 +4,7 @@ component {
 	this.title          = "Cloudflare R2 SDK";
 	this.author         = "Eric Peterson";
 	this.description    = "Cloudflare R2 object storage over the S3-compatible API.";
-	this.version        = "0.1.0";
+	this.version        = "1.0.0";
 	this.cfmapping      = "r2sdk";
 	this.modelNamespace = "r2sdk";
 	this.autoMapModels  = false;
