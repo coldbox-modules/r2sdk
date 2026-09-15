@@ -252,14 +252,14 @@ class R2ContractServer {
         if (status == 200 && etag != null && body.length > 0) {
             exchange.getResponseHeaders().set("Last-Modified", "Thu, 10 Sep 2026 00:00:00 GMT");
         }
-        if (status == 204) {
+        if (status == 204 || exchange.getRequestMethod().equals("HEAD") || body.length == 0) {
+            exchange.getResponseHeaders().set("Content-Length", String.valueOf(body.length));
             exchange.sendResponseHeaders(status, -1);
             return;
         }
-        exchange.getResponseHeaders().set("Content-Length", String.valueOf(body.length));
-        exchange.sendResponseHeaders(status, exchange.getRequestMethod().equals("HEAD") ? -1 : body.length);
-        if (!exchange.getRequestMethod().equals("HEAD")) {
-            exchange.getResponseBody().write(body);
-        }
+        // HttpServer sets Content-Length for fixed bodies. Never pair it with
+        // a manual zero length while sending chunked framing.
+        exchange.sendResponseHeaders(status, body.length);
+        exchange.getResponseBody().write(body);
     }
 }
