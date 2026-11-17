@@ -76,6 +76,22 @@ component extends="s3sdk.models.AmazonS3" {
 		);
 	}
 
+	/** Retrieve stored-object metadata without negotiating a transformed representation. */
+	struct function getObjectInfo(
+		required string bucketName = variables.defaultBucketName,
+		required string uri,
+		string encryptionKey = variables.defaultEncryptionKey
+	){
+		buildUrlEndpoint( arguments.bucketName );
+		requireBucketName( arguments.bucketName );
+		var response = s3Request(
+			method   = "HEAD",
+			resource = buildKeyName( arguments.uri, arguments.bucketName ),
+			headers  = applyEncryptionHeaders( { "Accept-Encoding" : "identity" }, arguments )
+		);
+		return response.responseHeader;
+	}
+
 	/**
 	 * Return the R2-compatible SigV4 signer; the configured protocol is always V4.
 	 *

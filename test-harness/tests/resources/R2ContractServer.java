@@ -101,6 +101,14 @@ class R2ContractServer {
                 respond(exchange, 404, new byte[0], null, null);
                 return;
             }
+            // R2 may omit the stored length when a compressible HEAD negotiates gzip.
+            if (method.equals("HEAD") && path.endsWith("/compressed-metadata.txt")
+                    && !headers.getOrDefault("accept-encoding", "").equals("identity")) {
+                exchange.getResponseHeaders().set("Content-Encoding", "gzip");
+                exchange.getResponseHeaders().set("Content-Type", object.contentType());
+                exchange.sendResponseHeaders(200, -1);
+                return;
+            }
             respond(exchange, 200, object.body(), object.contentType(),
                 "\"" + md5(object.body()) + "\"");
         } finally {

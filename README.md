@@ -101,6 +101,9 @@ R2 does not support object ACLs. ACL arguments and ACL APIs raise
 `r2sdk.UnsupportedACL`; configure bucket public access in Cloudflare. The SDK
 neither provisions public domains nor turns private files public.
 
+Metadata HEAD requests send `Accept-Encoding: identity` to preserve the stored
+object length when R2 would otherwise negotiate compression.
+
 The local HTTP contract covers object PUT/GET/HEAD/DELETE, copies, binary data,
 configuration, and signed downloads. Inherited APIs such as bucket management,
 multipart uploads, and directory listings are not automatically R2-certified.

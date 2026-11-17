@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Request identity encoding for object metadata so compressed HEAD responses cannot hide the stored byte length.
+
 ## 1.0.0 - 2026-09-15
 
 - Initial R2 compatibility layer over s3sdk 5.8.1+119.

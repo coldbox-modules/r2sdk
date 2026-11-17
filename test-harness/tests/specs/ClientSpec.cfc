@@ -36,6 +36,45 @@ component
 				variables.r2Client.deleteObject( "private-contract", key );
 				expect( variables.r2Client.objectExists( "private-contract", key ) ).toBeFalse();
 			} );
+			it( "reads the stored length of compressible nested objects without accepting gzip", function(){
+				var key     = "sdk/metadata/compressed-metadata.txt";
+				var payload = repeatString( "Compressible metadata contract. ", 20 );
+				variables.r2Client.putObject(
+					bucketName  = "private-contract",
+					uri         = key,
+					data        = payload,
+					contentType = "text/plain"
+				);
+				try {
+					var address = variables.r2Client.getAuthenticatedURL(
+						bucketName   = "private-contract",
+						uri          = key,
+						minutesValid = 2,
+						method       = "HEAD"
+					);
+					cfhttp(
+						url     = address,
+						method  = "HEAD",
+						result  = "local.encoded",
+						timeout = 5
+					) {
+						cfhttpparam(
+							type  = "header",
+							name  = "Accept-Encoding",
+							value = "gzip"
+						);
+					}
+					expect( encoded.statusCode ).toStartWith( "200" );
+					expect( encoded.responseHeader[ "Content-Encoding" ] ).toBe( "gzip" );
+					expect( encoded.responseHeader.keyExists( "Content-Length" ) ).toBeFalse();
+					var metadata = variables.r2Client.getObjectInfo( "private-contract", key );
+					expect( metadata[ "Content-Length" ] ).toBe( len( payload ) );
+					expect( metadata.keyExists( "Content-Encoding" ) ).toBeFalse();
+				} finally {
+					variables.r2Client.deleteObject( "private-contract", key );
+				}
+			} );
+
 			it( "preserves positional copies", function(){
 				variables.r2Client.putObject( "private-contract", key, bytes );
 				expect(
